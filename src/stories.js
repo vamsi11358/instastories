@@ -1,26 +1,28 @@
-
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import Slider from 'react-slick';
 import axios from 'axios';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 const StoryContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 `;
 
 const CircleContainer = styled.div`
-  display: flex;
-  overflow-x: auto; /* Enable horizontal scrolling */
   width: 100%;
-  max-width: 350px; /* Limit to show only 5 circles at a time */
   padding: 10px;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const Circle = styled.div`
-  flex: 0 0 60px; /* Fixed size for each circle */
   width: 60px;
   height: 60px;
   border-radius: 50%;
@@ -29,11 +31,16 @@ const Circle = styled.div`
   margin: 0 5px;
   border: 2px solid #fff;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const StoryContent = styled.div`
   width: 100%;
-  max-width: 500px;
   height: 500px;
   display: flex;
   align-items: center;
@@ -43,6 +50,8 @@ const StoryContent = styled.div`
   margin-top: 20px;
   border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-image 0.5s ease-in-out;
 
   @media (max-width: 768px) {
     height: 300px;
@@ -74,16 +83,30 @@ const Stories = () => {
     return () => clearInterval(timer);
   }, [data]);
 
+  const settings = {
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    swipeToSlide: true,
+    arrows: false,
+    dots: false
+  };
+
   return (
     <StoryContainer>
       <CircleContainer>
-        {data.map((story, index) => (
-          <Circle
-            key={index}
-            style={{ backgroundImage: `url(${story})` }}
-            onClick={() => setCurrentStory(index)}
-          />
-        ))}
+        <Slider {...settings}>
+          {data.map((story, index) => (
+            <>
+            <Circle
+              key={index}
+              style={{ backgroundImage: `url(${story})` }}
+              onClick={() => setCurrentStory(index)}
+            />
+            </>
+           ))}
+        </Slider>
       </CircleContainer>
       {data.length > 0 && (
         <StoryContent style={{ backgroundImage: `url(${data[currentStory]})` }}>
